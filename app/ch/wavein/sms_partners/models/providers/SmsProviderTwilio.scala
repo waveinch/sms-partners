@@ -16,7 +16,7 @@ import scala.concurrent.Future
 /**
   * Created by mattia on 11/01/16.
   */
-class TwilioSmsProvider @Inject() (
+class SmsProviderTwilio @Inject()(
                                   configuration: Configuration
                                   ) extends SmsProvider {
   val sid = configuration.getString("twilio.sid")
@@ -31,7 +31,7 @@ class TwilioSmsProvider @Inject() (
     val params = Seq(
       new BasicNameValuePair("To", sms.to),
       new BasicNameValuePair("From", sms.from),
-      new BasicNameValuePair("Body", "Hey Jenny! Good luck on the bar exam!")
+      new BasicNameValuePair("Body", sms.body)
     )
 
     val messageFactory = client.getAccount().getMessageFactory

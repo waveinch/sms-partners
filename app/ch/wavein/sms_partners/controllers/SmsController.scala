@@ -54,7 +54,8 @@ class SmsController @Inject() (
     Logger.info(from.map(_.toString()).getOrElse("NADA"))
     Logger.info(body.map(_.toString()).getOrElse("NADA"))
 
-    // TODO
+    // TODO: Add XML response type
+
     Future.successful(Ok("<Response>"))
   }
 

@@ -1,6 +1,6 @@
 package ch.wavein.sms_partners.modules
 
-import ch.wavein.sms_partners.models.providers.{SmsProvider, TwilioSmsProvider}
+import ch.wavein.sms_partners.models.providers.{SmsProvider, SmsProviderTwilio}
 import com.google.inject.AbstractModule
 import net.codingwell.scalaguice.ScalaModule
 import play.api.libs.concurrent.AkkaGuiceSupport
@@ -10,6 +10,6 @@ import play.api.libs.concurrent.AkkaGuiceSupport
   */
 class AppModule  extends AbstractModule with ScalaModule with AkkaGuiceSupport {
   override def configure(): Unit = {
-    bind[SmsProvider].to[TwilioSmsProvider]
+    bind[SmsProvider].to[SmsProviderTwilio]
   }
 }
