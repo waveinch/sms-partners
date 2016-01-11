@@ -6,6 +6,7 @@ import ch.wavein.sms_partners.models.Sms
 import ch.wavein.sms_partners.models.providers.SmsProvider
 import ch.wavein.sms_partners.viewmodels.requests.SmsSendRequest
 import ch.wavein.sms_partners.viewmodels.responses.SmsSendResponse
+import play.api.Logger
 import play.api.libs.json
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
@@ -43,7 +44,18 @@ class SmsController @Inject() (
 
       Ok(Json.toJson(response))
     }
+  }
 
+  def receiveSms() = Action.async(parse.urlFormEncoded) { implicit request =>
+    val messageSid = request.body.get("MessageSid")
+    val from = request.body.get("From")
+    val body = request.body.get("Body")
+    Logger.info(messageSid.map(_.toString()).getOrElse("NADA"))
+    Logger.info(from.map(_.toString()).getOrElse("NADA"))
+    Logger.info(body.map(_.toString()).getOrElse("NADA"))
+
+    // TODO
+    Future.successful(Ok("<Response>"))
   }
 
 }
