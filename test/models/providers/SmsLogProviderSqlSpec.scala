@@ -1,6 +1,7 @@
 package models.providers
 
 import ch.wavein.sms_partners.models.providers.SmsLogProviderSql
+import ch.wavein.sms_partners.viewmodels.filters.SmsLogFilter
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.concurrent.ScalaFutures
@@ -32,7 +33,7 @@ class SmsLogProviderSqlSpec extends FlatSpec with Matchers with ScalaFutures wit
       whenReady(smsLogProvider.get(smsSaved.id.get)) { smsRetrieved =>
         smsSaved shouldBe smsRetrieved.get
 
-        whenReady(smsLogProvider.rm(smsSaved.id)) { affectedRows =>
+        whenReady(smsLogProvider.rm(SmsLogFilter(smsSaved.id))) { affectedRows =>
           affectedRows shouldBe 1
         }
       }

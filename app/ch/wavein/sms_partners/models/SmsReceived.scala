@@ -1,5 +1,7 @@
 package ch.wavein.sms_partners.models
 
+import play.api.libs.json.Json
+
 /**
   * Created by mattia on 11/01/16.
   */
@@ -14,6 +16,8 @@ case class SmsReceived(
                       )
 
 object SmsReceived {
+  val formatter = Json.format[SmsReceived]
+
   def fromHttpForm(form: Map[String, Seq[String]]): SmsReceived =
     SmsReceived(
       id = None,

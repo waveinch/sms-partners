@@ -2,8 +2,10 @@ package ch.wavein.sms_partners.controllers
 
 import javax.inject.Inject
 
+import ch.wavein.sms_partners.auth.BasicAuthAction
 import ch.wavein.sms_partners.models.{SmsReceived, Sms}
 import ch.wavein.sms_partners.models.providers.{SmsLogProvider, SmsProvider}
+import ch.wavein.sms_partners.viewmodels.filters.SmsLogFilter
 import ch.wavein.sms_partners.viewmodels.requests.SmsSendRequest
 import ch.wavein.sms_partners.viewmodels.responses.SmsSendResponse
 import play.api.Logger
@@ -20,12 +22,14 @@ import scala.concurrent.Future
   */
 class SmsController @Inject() (
                               smsProvider: SmsProvider,
-                              smsLogProvider: SmsLogProvider
+                              smsLogProvider: SmsLogProvider,
+                              basicAuthAction: BasicAuthAction
                               ) extends Controller {
   implicit val ssrsFormatter = SmsSendResponse.formatter
   implicit val ssrqFormatter = SmsSendRequest.formatter
+  implicit val srFormatter = SmsReceived.formatter
 
-  def sendSms() = Action.async(parse.json[SmsSendRequest]) { implicit request =>
+  def sendSms() = basicAuthAction.async(parse.json[SmsSendRequest]) { implicit request =>
     val smsRequest = request.body
 
     val requestsFut = smsRequest.to map { destination =>
@@ -51,6 +55,12 @@ class SmsController @Inject() (
     for {
       _ <- smsLogProvider.add(SmsReceived.fromHttpForm(request.body))
     } yield Ok("<Response>") // TODO: Add XML response type
+  }
+
+  def querySms(accountSid: String) = basicAuthAction.async { implicit request =>
+    for {
+      smss <- smsLogProvider.find(SmsLogFilter(accountSid = Some(accountSid)))
+    } yield Ok(Json.toJson(smss))
   }
 
 }

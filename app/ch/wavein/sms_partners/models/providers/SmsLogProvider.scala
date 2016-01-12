@@ -1,6 +1,7 @@
 package ch.wavein.sms_partners.models.providers
 
 import ch.wavein.sms_partners.models.SmsReceived
+import ch.wavein.sms_partners.viewmodels.filters.SmsLogFilter
 
 import scala.concurrent.Future
 
@@ -10,6 +11,6 @@ import scala.concurrent.Future
 trait SmsLogProvider {
   def add(smsReceived: SmsReceived): Future[SmsReceived]
   def get(id: Int): Future[Option[SmsReceived]]
-  def find(accountSid: String): Future[Seq[SmsReceived]]
-  def rm(id: Option[Int]): Future[Int]
+  def find(filter: SmsLogFilter): Future[Seq[SmsReceived]]
+  def rm(filter: SmsLogFilter): Future[Int]
 }

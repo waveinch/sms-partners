@@ -5,6 +5,7 @@ import javax.inject.Inject
 import ch.wavein.sms_partners.models.SmsReceived
 import ch.wavein.sms_partners.models.schema.Tables
 import ch.wavein.sms_partners.models.schema.Tables.SmsLogsRow
+import ch.wavein.sms_partners.viewmodels.filters.SmsLogFilter
 import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 import play.api.libs.concurrent.Execution.Implicits._
@@ -40,24 +41,27 @@ class SmsLogProviderSql @Inject()(dbConfigProvider: DatabaseConfigProvider) exte
       .headOption
   }.map(_.map(smsRow2SmsReceived))
 
-  override def find(accountSid: String): Future[Seq[SmsReceived]] = dbConfig.db.run {
+  override def find(filter: SmsLogFilter): Future[Seq[SmsReceived]] = dbConfig.db.run {
     Tables.SmsLogs
-      .filter(_.accountSid === accountSid)
+      .filter(filterFactory(filter))
       .to[Seq]
       .result
   }.map(_.map(smsRow2SmsReceived))
 
-  override def rm(id: Option[Int]): Future[Int] = {
-    val filters = (s: Tables.SmsLogs) => Seq(
-      id.map(idd => s.id === idd)
-    ).collect({ case Some(criteria) => criteria}).reduceLeftOption(_ && _).getOrElse(true: Rep[Boolean])
-
+  override def rm(filter: SmsLogFilter): Future[Int] = {
+    
     val action = Tables.SmsLogs
-      .filter(filters)
+      .filter(filterFactory(filter))
       .delete
 
     dbConfig.db.run(action)
+  }
 
+  private def filterFactory(filter: SmsLogFilter)(t: Tables.SmsLogs) = {
+    Seq(
+      filter.id.map(id => t.id === id),
+      filter.accountSid.map(a => t.accountSid === a)
+    ).collect({ case Some(criteria) => criteria}).reduceLeftOption(_ && _).getOrElse(true: Rep[Boolean])
   }
 
   private def smsRow2SmsReceived(s: SmsLogsRow): SmsReceived =
