@@ -2,8 +2,8 @@ package ch.wavein.sms_partners.controllers
 
 import javax.inject.Inject
 
-import ch.wavein.sms_partners.models.Sms
-import ch.wavein.sms_partners.models.providers.SmsProvider
+import ch.wavein.sms_partners.models.{SmsReceived, Sms}
+import ch.wavein.sms_partners.models.providers.{SmsLogProvider, SmsProvider}
 import ch.wavein.sms_partners.viewmodels.requests.SmsSendRequest
 import ch.wavein.sms_partners.viewmodels.responses.SmsSendResponse
 import play.api.Logger
@@ -19,7 +19,8 @@ import scala.concurrent.Future
   * Created by mattia on 11/01/16.
   */
 class SmsController @Inject() (
-                              smsProvider: SmsProvider
+                              smsProvider: SmsProvider,
+                              smsLogProvider: SmsLogProvider
                               ) extends Controller {
   implicit val ssrsFormatter = SmsSendResponse.formatter
   implicit val ssrqFormatter = SmsSendRequest.formatter
@@ -47,16 +48,9 @@ class SmsController @Inject() (
   }
 
   def receiveSms() = Action.async(parse.urlFormEncoded) { implicit request =>
-    val messageSid = request.body.get("MessageSid")
-    val from = request.body.get("From")
-    val body = request.body.get("Body")
-    Logger.info(messageSid.map(_.toString()).getOrElse("NADA"))
-    Logger.info(from.map(_.toString()).getOrElse("NADA"))
-    Logger.info(body.map(_.toString()).getOrElse("NADA"))
-
-    // TODO: Add XML response type
-
-    Future.successful(Ok("<Response>"))
+    for {
+      _ <- smsLogProvider.add(SmsReceived.fromHttpForm(request.body))
+    } yield Ok("<Response>") // TODO: Add XML response type
   }
 
 }

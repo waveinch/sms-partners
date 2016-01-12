@@ -7,10 +7,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
-  jdbc,
   cache,
   ws,
-  specs2 % Test,
+  "org.scalatest" %% "scalatest" % "2.2.6" % "test",
   "com.twilio.sdk" % "twilio-java-sdk" % "5.8.0",
   "com.typesafe.play" %% "play-slick" % "1.1.1",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",
