@@ -15,8 +15,9 @@ import scala.concurrent.Future
 class BasicAuthRequest[A](val auth: Auth, request: Request[A]) extends WrappedRequest[A](request)
 
 class BasicAuthAction @Inject()(configuration: Configuration) extends ActionBuilder[BasicAuthRequest] with ActionRefiner[Request, BasicAuthRequest] {
-  val usernameConfig = "auth.basic.username"
-  val passwordConfig = "auth.basic.password"
+  val usernameConfig = BasicAuthAction.usernameConfig
+  val passwordConfig = BasicAuthAction.passwordConfig
+
   val username = configuration.getString(usernameConfig)
     .getOrElse(throw new Exception("Basic Auth username not found -> " + usernameConfig))
   val password = configuration.getString(passwordConfig)
@@ -38,4 +39,9 @@ class BasicAuthAction @Inject()(configuration: Configuration) extends ActionBuil
     val Array(user, pass) = new String(new sun.misc.BASE64Decoder().decodeBuffer(baStr), "UTF-8").split(":")
     Auth(user, pass)
   }
+}
+
+object BasicAuthAction {
+  val usernameConfig = "auth.basic.username"
+  val passwordConfig = "auth.basic.password"
 }

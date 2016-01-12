@@ -12,6 +12,7 @@ import scala.collection.JavaConversions._
 import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 /**
   * Created by mattia on 11/01/16.
@@ -35,7 +36,10 @@ class SmsProviderTwilio @Inject()(
     )
 
     val messageFactory = client.getAccount().getMessageFactory
-    val message = messageFactory.create(params)
-    SmsSendResponse(message.getStatus)
+    Try(messageFactory.create(params)) match {
+      case Success(message) => SmsSendResponse(message.getStatus)
+      case Failure(ex: Exception) => SmsSendResponse(ex.toString)
+    }
+
   }
 }

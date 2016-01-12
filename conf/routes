@@ -8,7 +8,7 @@ GET     /                           ch.wavein.sms_partners.controllers.Applicati
 POST    /v1/sms/send                ch.wavein.sms_partners.controllers.SmsController.sendSms()
 POST    /v1/sms/receive             ch.wavein.sms_partners.controllers.SmsController.receiveSms()
 
-GET     /v1/sms/:accountSid         ch.wavein.sms_partners.controllers.SmsController.querySms(accountSid)
+GET     /v1/sms/:fromPhone          ch.wavein.sms_partners.controllers.SmsController.querySms(fromPhone, limit: Option[Int])
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

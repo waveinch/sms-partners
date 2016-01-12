@@ -10,6 +10,7 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+  "org.scalatestplus" %% "play" % "1.4.0-M4" % "test",
   "com.twilio.sdk" % "twilio-java-sdk" % "5.8.0",
   "com.typesafe.play" %% "play-slick" % "1.1.1",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",

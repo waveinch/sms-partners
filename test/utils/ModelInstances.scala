@@ -1,6 +1,7 @@
 package utils
 
 import ch.wavein.sms_partners.models.SmsReceived
+import ch.wavein.sms_partners.viewmodels.responses.SmsSendResponse
 import org.joda.time.DateTime
 
 /**
@@ -17,4 +18,6 @@ object ModelInstances {
     to = "to",
     created = DateTime.now.withMillisOfSecond(0)
   )
+
+  val smsSendResponseSuccess = SmsSendResponse("queued")
 }
