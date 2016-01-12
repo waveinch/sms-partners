@@ -54,12 +54,12 @@ class SmsController @Inject() (
   def receiveSms() = Action.async(parse.urlFormEncoded) { implicit request =>
     for {
       _ <- smsLogProvider.add(SmsReceived.fromHttpForm(request.body))
-    } yield Ok("<Response>") // TODO: Add XML response type
+    } yield Ok(<Response></Response>)
   }
 
-  def querySms(accountSid: String) = basicAuthAction.async { implicit request =>
+  def querySms(fromPhone: String, limit: Option[Int]) = basicAuthAction.async { implicit request =>
     for {
-      smss <- smsLogProvider.find(SmsLogFilter(accountSid = Some(accountSid)))
+      smss <- smsLogProvider.find(SmsLogFilter(fromPhone = Some(fromPhone)))
     } yield Ok(Json.toJson(smss))
   }
 

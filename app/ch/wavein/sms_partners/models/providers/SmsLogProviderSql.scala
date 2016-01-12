@@ -5,6 +5,7 @@ import javax.inject.Inject
 import ch.wavein.sms_partners.models.SmsReceived
 import ch.wavein.sms_partners.models.schema.Tables
 import ch.wavein.sms_partners.models.schema.Tables.SmsLogsRow
+import ch.wavein.sms_partners.utils.{DateConverter, DateFormatter}
 import ch.wavein.sms_partners.viewmodels.filters.SmsLogFilter
 import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
@@ -30,7 +31,9 @@ class SmsLogProviderSql @Inject()(dbConfigProvider: DatabaseConfigProvider) exte
         smsReceived.messagingServiceSid,
         smsReceived.from,
         smsReceived.to,
-        smsReceived.body)
+        smsReceived.body,
+        DateConverter.toSqlTimestamp(smsReceived.created)
+      )
     }.map(newId => smsReceived.copy(id = Some(newId)))
   }
 
@@ -49,7 +52,7 @@ class SmsLogProviderSql @Inject()(dbConfigProvider: DatabaseConfigProvider) exte
   }.map(_.map(smsRow2SmsReceived))
 
   override def rm(filter: SmsLogFilter): Future[Int] = {
-    
+
     val action = Tables.SmsLogs
       .filter(filterFactory(filter))
       .delete
@@ -60,7 +63,8 @@ class SmsLogProviderSql @Inject()(dbConfigProvider: DatabaseConfigProvider) exte
   private def filterFactory(filter: SmsLogFilter)(t: Tables.SmsLogs) = {
     Seq(
       filter.id.map(id => t.id === id),
-      filter.accountSid.map(a => t.accountSid === a)
+      filter.accountSid.map(a => t.accountSid === a),
+      filter.fromPhone.map(f => t.fromPhone === f)
     ).collect({ case Some(criteria) => criteria}).reduceLeftOption(_ && _).getOrElse(true: Rep[Boolean])
   }
 
@@ -72,7 +76,8 @@ class SmsLogProviderSql @Inject()(dbConfigProvider: DatabaseConfigProvider) exte
       messagingServiceSid = s.messagingServiceSid,
       from = s.fromPhone,
       to = s.toPhone,
-      body = s.body
+      body = s.body,
+      created = DateConverter.toDateTime(s.created)
     )
 
 

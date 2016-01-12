@@ -1,6 +1,7 @@
 package utils
 
 import ch.wavein.sms_partners.models.SmsReceived
+import org.joda.time.DateTime
 
 /**
   * Created by mattia on 12/01/16.
@@ -13,6 +14,7 @@ object ModelInstances {
     messagingServiceSid = "messagingServiceSid",
     from = "from",
     body = "body",
-    to = "to"
+    to = "to",
+    created = DateTime.now.withMillisOfSecond(0)
   )
 }

@@ -1,5 +1,6 @@
 package ch.wavein.sms_partners.models
 
+import org.joda.time.DateTime
 import play.api.libs.json.Json
 
 /**
@@ -12,7 +13,8 @@ case class SmsReceived(
                       messagingServiceSid: String,
                       from: String,
                       to: String,
-                      body: String
+                      body: String,
+                      created: DateTime
                       )
 
 object SmsReceived {
@@ -26,7 +28,8 @@ object SmsReceived {
       messagingServiceSid = getString("MessagingServiceSid", form),
       from = getString("From", form),
       to = getString("To", form),
-      body = getString("Body", form)
+      body = getString("Body", form),
+      created = DateTime.now
     )
 
   private def getString(name: String, map: Map[String, Seq[String]]) =

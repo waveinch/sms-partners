@@ -17,7 +17,7 @@ import org.scalatest.concurrent.ScalaFutures
 class SmsLogProviderSqlSpec extends FlatSpec with Matchers with ScalaFutures with SpanSugar {
   val application = new GuiceApplicationBuilder()
     .in(Mode.Test)
-    .loadConfig(Configuration(ConfigFactory.load("application.conf")))
+    .loadConfig(Configuration(ConfigFactory.load("application.test.conf")))
     .build()
 
   val configuration = application.injector.instanceOf[Configuration]

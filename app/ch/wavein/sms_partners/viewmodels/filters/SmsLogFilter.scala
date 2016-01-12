@@ -5,5 +5,6 @@ package ch.wavein.sms_partners.viewmodels.filters
   */
 case class SmsLogFilter(
                        id: Option[Int] = None,
-                       accountSid: Option[String] = None
+                       accountSid: Option[String] = None,
+                       fromPhone: Option[String] = None
                        )
